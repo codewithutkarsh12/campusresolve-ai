@@ -1,1 +1,1 @@
-# campusresolve-ai
+These tests are intentionally small and dependency-free. They verify input/model-output handling and safe behavior when the Gemini server secret is not configured. They do not replace browser end-to-end, live-provider, authorization, accessibility, or production security testing.
