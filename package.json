@@ -1,0 +1,20 @@
+{
+  "name": "campusresolve-ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Campus incident intelligence demo for PromptWars",
+  "scripts": {
+    "lint": "node --check server.js && node --check csv.js && node --check app.js && node --check lib/triage.js && node --check api/triage.js && node --check tests/browser-smoke.js",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node tests/browser-smoke.js",
+    "dev": "node server.js",
+    "build": "npm run lint",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@google/genai": "^2.31.0"
+  }
+}

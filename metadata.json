@@ -1,0 +1,8 @@
+{
+  "name": "CampusResolve AI — Incident Intelligence",
+  "description": "CampusResolve AI turns campus maintenance reports into evidence-backed triage, accountable workflows, and recurring-fault insights.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
