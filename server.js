@@ -11,6 +11,7 @@ const PUBLIC_ASSETS = new Map([
   ['/app.js', { file: 'app.js', type: 'application/javascript; charset=utf-8' }],
   ['/csv.js', { file: 'csv.js', type: 'application/javascript; charset=utf-8' }],
   ['/favicon.svg', { file: 'favicon.svg', type: 'image/svg+xml' }],
+  ['/favicon.ico', { file: 'favicon.svg', type: 'image/svg+xml' }],
 ]);
 
 const SECURITY_HEADERS = Object.freeze({
@@ -29,15 +30,50 @@ function applySecurityHeaders(res) {
 
 function readRequestBody(req, maxBytes) {
   return new Promise((resolve, reject) => {
+    if (req.body !== undefined) {
+      if (typeof req.body === 'string') {
+        if (Buffer.byteLength(req.body, 'utf8') > maxBytes) {
+          const err = new Error('Payload too large');
+          err.code = 'REQUEST_TOO_LARGE';
+          reject(err);
+          return;
+        }
+        resolve(req.body);
+        return;
+      }
+      if (Buffer.isBuffer(req.body)) {
+        if (req.body.length > maxBytes) {
+          const err = new Error('Payload too large');
+          err.code = 'REQUEST_TOO_LARGE';
+          reject(err);
+          return;
+        }
+        resolve(req.body.toString('utf8'));
+        return;
+      }
+      if (typeof req.body === 'object' && req.body !== null) {
+        const serialized = JSON.stringify(req.body);
+        if (Buffer.byteLength(serialized, 'utf8') > maxBytes) {
+          const err = new Error('Payload too large');
+          err.code = 'REQUEST_TOO_LARGE';
+          reject(err);
+          return;
+        }
+        resolve(serialized);
+        return;
+      }
+    }
+
     const chunks = [];
     let total = 0;
     let tooLarge = false;
     req.on('data', (chunk) => {
-      total += chunk.length;
+      const buf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(String(chunk));
+      total += buf.length;
       if (total > maxBytes) {
         tooLarge = true;
       } else {
-        chunks.push(chunk);
+        chunks.push(buf);
       }
     });
     req.on('end', () => {
@@ -53,15 +89,15 @@ function readRequestBody(req, maxBytes) {
   });
 }
 
-function createServer() {
-  return http.createServer(async (req, res) => {
+async function handleRequest(req, res) {
+  try {
     applySecurityHeaders(res);
 
     const parsedUrl = new URL(req.url || '/', 'http://localhost');
     const pathname = parsedUrl.pathname;
 
     if (pathname === '/api/triage') {
-      if (req.method === 'POST') {
+      if (req.method === 'POST' && (req.body === undefined || typeof req.body === 'string' || Buffer.isBuffer(req.body))) {
         try {
           const raw = await readRequestBody(req, triageHandler.MAX_REQUEST_BYTES || 6000);
           if (!raw.trim()) {
@@ -112,23 +148,26 @@ function createServer() {
     }
 
     const filePath = path.join(ROOT, asset.file);
-    fs.readFile(filePath, (err, content) => {
-      if (err) {
-        res.statusCode = 500;
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        res.end('Internal Server Error');
-        return;
-      }
-      res.statusCode = 200;
-      res.setHeader('Content-Type', asset.type);
-      res.setHeader('Cache-Control', 'no-cache');
-      if (req.method === 'HEAD') {
-        res.end();
-      } else {
-        res.end(content);
-      }
-    });
-  });
+    const content = await fs.promises.readFile(filePath);
+    res.statusCode = 200;
+    res.setHeader('Content-Type', asset.type);
+    res.setHeader('Cache-Control', 'no-cache');
+    if (req.method === 'HEAD') {
+      res.end();
+    } else {
+      res.end(content);
+    }
+  } catch {
+    if (!res.headersSent) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    }
+    res.end('Internal Server Error');
+  }
+}
+
+function createServer() {
+  return http.createServer(handleRequest);
 }
 
 if (require.main === module) {
@@ -140,4 +179,8 @@ if (require.main === module) {
   });
 }
 
-module.exports = { createServer, PUBLIC_ASSETS, SECURITY_HEADERS };
+handleRequest.createServer = createServer;
+handleRequest.PUBLIC_ASSETS = PUBLIC_ASSETS;
+handleRequest.SECURITY_HEADERS = SECURITY_HEADERS;
+
+module.exports = handleRequest;

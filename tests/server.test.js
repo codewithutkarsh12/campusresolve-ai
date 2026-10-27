@@ -16,6 +16,8 @@ async function withServer(run) {
 }
 
 test('server serves index.html with security headers and Content-Security-Policy', async () => {
+  const serverExport = require('../server');
+  assert.equal(typeof serverExport, 'function', 'server.js must export a direct (req, res) handler function for serverless runtimes');
   await withServer(async (baseUrl) => {
     const res = await fetch(`${baseUrl}/`);
     assert.equal(res.status, 200);
