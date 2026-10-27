@@ -1,6 +1,13 @@
 (() => {
   'use strict';
 
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      module.exports = require('./server');
+    }
+    return;
+  }
+
   const STORAGE_KEY = 'campusresolve-demo-v1';
   const AUDIT_KEY = 'campusresolve-audit-v1';
   const categoryMeta = {

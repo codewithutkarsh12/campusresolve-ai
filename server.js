@@ -5,13 +5,13 @@ const triageHandler = require('./api/triage');
 
 const ROOT = __dirname;
 const PUBLIC_ASSETS = new Map([
-  ['/', { file: 'index.html', type: 'text/html; charset=utf-8' }],
-  ['/index.html', { file: 'index.html', type: 'text/html; charset=utf-8' }],
-  ['/styles.css', { file: 'styles.css', type: 'text/css; charset=utf-8' }],
-  ['/app.js', { file: 'app.js', type: 'application/javascript; charset=utf-8' }],
-  ['/csv.js', { file: 'csv.js', type: 'application/javascript; charset=utf-8' }],
-  ['/favicon.svg', { file: 'favicon.svg', type: 'image/svg+xml' }],
-  ['/favicon.ico', { file: 'favicon.svg', type: 'image/svg+xml' }],
+  ['/', { file: 'index.html', filePath: path.join(__dirname, 'index.html'), type: 'text/html; charset=utf-8' }],
+  ['/index.html', { file: 'index.html', filePath: path.join(__dirname, 'index.html'), type: 'text/html; charset=utf-8' }],
+  ['/styles.css', { file: 'styles.css', filePath: path.join(__dirname, 'styles.css'), type: 'text/css; charset=utf-8' }],
+  ['/app.js', { file: 'app.js', filePath: path.join(__dirname, 'app.js'), type: 'application/javascript; charset=utf-8' }],
+  ['/csv.js', { file: 'csv.js', filePath: path.join(__dirname, 'csv.js'), type: 'application/javascript; charset=utf-8' }],
+  ['/favicon.svg', { file: 'favicon.svg', filePath: path.join(__dirname, 'favicon.svg'), type: 'image/svg+xml' }],
+  ['/favicon.ico', { file: 'favicon.svg', filePath: path.join(__dirname, 'favicon.svg'), type: 'image/svg+xml' }],
 ]);
 
 const SECURITY_HEADERS = Object.freeze({
@@ -147,7 +147,7 @@ async function handleRequest(req, res) {
       return;
     }
 
-    const filePath = path.join(ROOT, asset.file);
+    const filePath = asset.filePath || path.join(ROOT, asset.file);
     const content = await fs.promises.readFile(filePath);
     res.statusCode = 200;
     res.setHeader('Content-Type', asset.type);
