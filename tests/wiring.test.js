@@ -44,10 +44,14 @@ test('vercel.json defines triage function maxDuration and Content-Security-Polic
   assert.ok(csp && csp.value.includes("default-src 'self'"));
 });
 
-test('client-side files contain no hardcoded API keys or secret tokens', () => {
+test('client-side files contain no hardcoded API keys or secret tokens and client-bundle matches app.js', () => {
   for (const file of ['index.html', 'styles.css', 'app.js', 'csv.js']) {
     const content = fs.readFileSync(path.join(ROOT, file), 'utf8');
     assert.doesNotMatch(content, /AIza[0-9A-Za-z_-]{20,}/);
     assert.doesNotMatch(content, /GEMINI_API_KEY\s*=\s*['"][^'"]+['"]/);
   }
+  const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  const clientBundle = require('../lib/client-bundle');
+  assert.equal(clientBundle, appJs, 'lib/client-bundle.js must match app.js byte-for-byte');
 });
+

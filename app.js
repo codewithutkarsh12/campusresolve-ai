@@ -185,8 +185,10 @@
   }
   function countCategory(category) { return tickets.filter(t => t.category === category).length; }
   function countStatus(status) { return tickets.filter(t => t.status === status).length; }
-  function metricCard(label, value, icon, tone, foot, change = '') {
-    return `<article class="metric-card"><div class="metric-top"><span class="metric-label">${escapeHTML(label)}</span><span class="metric-icon ${tone || ''}">${icon}</span></div><div class="metric-number">${escapeHTML(value)}</div><div class="metric-foot">${change ? `<span class="metric-change ${change === '—' ? 'neutral' : ''}">${escapeHTML(change)}</span>` : ''}<span>${escapeHTML(foot)}</span></div></article>`;
+  let activityRange = 7;
+  function metricCard(label, value, icon, tone, foot, change = '', action = '') {
+    const attr = action ? ` data-metric-action="${escapeHTML(action)}" style="cursor:pointer"` : '';
+    return `<article class="metric-card"${attr}><div class="metric-top"><span class="metric-label">${escapeHTML(label)}</span><span class="metric-icon ${tone || ''}">${icon}</span></div><div class="metric-number">${escapeHTML(value)}</div><div class="metric-foot">${change ? `<span class="metric-change ${change === '—' ? 'neutral' : ''}">${escapeHTML(change)}</span>` : ''}<span>${escapeHTML(foot)}</span></div></article>`;
   }
   function renderMetrics() {
     const openCount = tickets.filter(isOpen).length;
@@ -194,10 +196,10 @@
     const resolvedCount = countStatus('resolved');
     const recurringCount = getRecurringGroups().length;
     $('metrics-grid').innerHTML = [
-      metricCard('Open incidents', openCount, '▤', '', 'Across all categories', '+2 this week'),
-      metricCard('High attention', urgentCount, 'ϟ', 'amber', 'Critical or high priority', urgentCount ? 'Review' : '—'),
-      metricCard('Resolved in demo', resolvedCount, '✓', 'blue', 'Seeded + local demo changes', '+1 today'),
-      metricCard('Recurring patterns', recurringCount, '↻', 'red', 'Groups with 2+ reports', recurringCount ? 'Inspect' : '—')
+      metricCard('Open incidents', openCount, '▤', '', 'Across all categories', '+2 this week', 'open'),
+      metricCard('High attention', urgentCount, 'ϟ', 'amber', 'Critical or high priority', urgentCount ? 'Review' : '—', 'urgent'),
+      metricCard('Resolved in demo', resolvedCount, '✓', 'blue', 'Seeded + local demo changes', '+1 today', 'resolved'),
+      metricCard('Recurring patterns', recurringCount, '↻', 'red', 'Groups with 2+ reports', recurringCount ? 'Inspect' : '—', 'recurring')
     ].join('');
     $('nav-open-count').textContent = String(openCount);
     $('attention-count').textContent = String(urgentCount + recurringCount);
@@ -205,20 +207,39 @@
   }
 
   function renderActivityChart() {
-    const data = [
-      { day: 'Sat', reports: 5, resolved: 2 }, { day: 'Sun', reports: 3, resolved: 2 },
-      { day: 'Mon', reports: 7, resolved: 4 }, { day: 'Tue', reports: 6, resolved: 4 },
-      { day: 'Wed', reports: 9, resolved: 6 }, { day: 'Thu', reports: 7, resolved: 5 },
-      { day: 'Fri', reports: 5, resolved: 3 }
-    ];
+    const datasets = {
+      7: [
+        { day: 'Sat', reports: 5, resolved: 2 }, { day: 'Sun', reports: 3, resolved: 2 },
+        { day: 'Mon', reports: 7, resolved: 4 }, { day: 'Tue', reports: 6, resolved: 4 },
+        { day: 'Wed', reports: 9, resolved: 6 }, { day: 'Thu', reports: 7, resolved: 5 },
+        { day: 'Fri', reports: 5, resolved: 3 }
+      ],
+      14: [
+        { day: 'W1', reports: 18, resolved: 11 }, { day: 'Sun', reports: 6, resolved: 4 },
+        { day: 'Mon', reports: 12, resolved: 8 }, { day: 'Tue', reports: 10, resolved: 7 },
+        { day: 'Wed', reports: 14, resolved: 10 }, { day: 'Thu', reports: 11, resolved: 8 },
+        { day: 'Fri', reports: 9, resolved: 6 }
+      ],
+      30: [
+        { day: 'W1', reports: 34, resolved: 24 }, { day: 'W2', reports: 29, resolved: 22 },
+        { day: 'W3', reports: 41, resolved: 31 }, { day: 'W4', reports: 38, resolved: 29 },
+        { day: 'Mon', reports: 11, resolved: 8 }, { day: 'Wed', reports: 14, resolved: 11 },
+        { day: 'Fri', reports: 12, resolved: 9 }
+      ]
+    };
+    const data = datasets[activityRange] || datasets[7];
     const max = Math.max(...data.map(d => d.reports));
     $('activity-chart').innerHTML = data.map(d => `<div class="chart-day"><div class="bars"><span class="bar bar-new" style="height:${Math.max(5, d.reports / max * 92)}%" title="${d.reports} synthetic reports"></span><span class="bar bar-resolved" style="height:${Math.max(5, d.resolved / max * 92)}%" title="${d.resolved} synthetic resolutions"></span></div><small>${d.day}</small></div>`).join('');
     $('week-total').textContent = String(data.reduce((n, d) => n + d.reports, 0));
+    const rangeSelect = document.querySelector('.small-select');
+    if (rangeSelect) {
+      rangeSelect.innerHTML = `Last ${activityRange} days <span>⌄</span>`;
+    }
   }
 
   function ticketRow(t) {
     const cat = categoryInfo(t.category);
-    return `<tr><td><div class="incident-cell"><span class="category-icon ${cat.color}">${cat.icon}</span><div><div class="incident-title">${escapeHTML(t.title)}</div><div class="incident-id">${escapeHTML(t.id)}</div></div></div></td><td><span class="category-name"><i class="mini-dot"></i>${escapeHTML(cat.label)}</span></td><td class="location-cell">${escapeHTML(t.location)}</td><td>${priorityBadge(t.priority)}</td><td>${statusBadge(t.status)}</td><td>${escapeHTML(ageLabel(t.minutesAgo ?? 1))}</td><td><button class="table-more" data-open-id="${escapeHTML(t.id)}" aria-label="Open ${escapeHTML(t.id)} details">···</button></td></tr>`;
+    return `<tr data-open-id="${escapeHTML(t.id)}" style="cursor:pointer"><td><div class="incident-cell"><span class="category-icon ${cat.color}">${cat.icon}</span><div><div class="incident-title">${escapeHTML(t.title)}</div><div class="incident-id">${escapeHTML(t.id)}</div></div></div></td><td><span class="category-name"><i class="mini-dot"></i>${escapeHTML(cat.label)}</span></td><td class="location-cell">${escapeHTML(t.location)}</td><td>${priorityBadge(t.priority)}</td><td>${statusBadge(t.status)}</td><td>${escapeHTML(ageLabel(t.minutesAgo ?? 1))}</td><td><button class="table-more" data-open-id="${escapeHTML(t.id)}" aria-label="Open ${escapeHTML(t.id)} details">···</button></td></tr>`;
   }
   function renderRecentTable() {
     const q = ($('overview-search')?.value || '').trim().toLowerCase();
@@ -245,7 +266,7 @@
     const max = Math.max(1, ...counts.map(x => x.count));
     $('category-breakdown').innerHTML = counts.filter(x => x.count > 0).map(item => {
       const meta = categoryInfo(item.category);
-      return `<div class="category-line"><div class="category-line-top"><span class="category-line-title"><span class="category-glyph">${meta.icon}</span>${escapeHTML(meta.label)}</span><span class="category-line-count">${item.count}</span></div><div class="category-progress"><span style="width:${item.count / max * 100}%"></span></div></div>`;
+      return `<div class="category-line" data-category-filter="${escapeHTML(item.category)}" style="cursor:pointer"><div class="category-line-top"><span class="category-line-title"><span class="category-glyph">${meta.icon}</span>${escapeHTML(meta.label)}</span><span class="category-line-count">${item.count}</span></div><div class="category-progress"><span style="width:${item.count / max * 100}%"></span></div></div>`;
     }).join('');
   }
   function renderAttention() {
@@ -429,7 +450,7 @@
     $('triage-result').classList.add('hidden');
     let result;
     try {
-      const response = await fetch('./api/triage', {
+      const response = await fetch('/api/triage', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ description: desc, location: loc, category: category || 'auto', safetyRisk: isSafetyRisk })
       });
@@ -593,7 +614,53 @@
     if (go) setPage(go.dataset.go);
     const open = event.target.closest('[data-open-id]');
     if (open) openTicketDetail(open.dataset.openId);
+    const metric = event.target.closest('[data-metric-action]');
+    if (metric) {
+      const action = metric.dataset.metricAction;
+      if (action === 'recurring') {
+        setPage('recurring');
+      } else {
+        $('incident-search').value = '';
+        $('filter-category').value = 'all';
+        $('filter-status').value = action === 'open' ? 'open' : action === 'resolved' ? 'resolved' : 'all';
+        $('filter-priority').value = action === 'urgent' ? 'high' : 'all';
+        setPage('incidents');
+      }
+    }
+    const catFilter = event.target.closest('[data-category-filter]');
+    if (catFilter && catFilter.dataset.categoryFilter) {
+      $('incident-search').value = '';
+      $('filter-category').value = catFilter.dataset.categoryFilter;
+      $('filter-status').value = 'all';
+      $('filter-priority').value = 'all';
+      setPage('incidents');
+    }
   });
+  const workspaceSwitch = document.querySelector('.workspace-switch');
+  if (workspaceSwitch) {
+    workspaceSwitch.style.cursor = 'pointer';
+    workspaceSwitch.addEventListener('click', () => {
+      setPage('overview');
+      toast('Workspace active', `NMIET Campus · Demo workspace (${tickets.length} synthetic records)`);
+    });
+  }
+  const avatarButton = document.querySelector('.avatar-button');
+  if (avatarButton) {
+    avatarButton.addEventListener('click', () => {
+      setPage('audit');
+      toast('Demo Operator (UB)', 'Viewing local facilities operator activity and audit timeline.');
+    });
+  }
+  const rangeSelect = document.querySelector('.small-select');
+  if (rangeSelect) {
+    rangeSelect.style.cursor = 'pointer';
+    rangeSelect.title = 'Click to switch synthetic activity timeframe';
+    rangeSelect.addEventListener('click', () => {
+      activityRange = activityRange === 7 ? 14 : activityRange === 14 ? 30 : 7;
+      renderActivityChart();
+      toast('Activity timeframe updated', `Showing synthetic activity for the last ${activityRange} days.`);
+    });
+  }
   $('mobile-menu').addEventListener('click', () => $('sidebar').classList.toggle('open'));
   $('new-report-top').addEventListener('click', openReportModal);
   $('new-report-incident').addEventListener('click', openReportModal);

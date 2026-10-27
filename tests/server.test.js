@@ -31,11 +31,26 @@ test('server serves index.html with security headers and Content-Security-Policy
   });
 });
 
-test('server serves approved static assets (styles.css, app.js, csv.js, favicon.svg)', async () => {
+test('server serves approved static assets (styles.css, app.js, client.js, csv.js, favicon.svg) including serverless bundle fallback', async () => {
   await withServer(async (baseUrl) => {
-    for (const path of ['/styles.css', '/app.js', '/csv.js', '/favicon.svg']) {
+    for (const path of ['/styles.css', '/app.js', '/client.js', '/csv.js', '/favicon.svg']) {
       const res = await fetch(`${baseUrl}${path}`);
       assert.equal(res.status, 200, `Expected 200 for ${path}`);
+    }
+    const serverExport = require('../server');
+    const appAsset = serverExport.PUBLIC_ASSETS.get('/app.js');
+    const origPath = appAsset.filePath;
+    const origFile = appAsset.file;
+    try {
+      appAsset.filePath = '/nonexistent/vercel/task/app.js';
+      appAsset.file = '__nonexistent_app__.js';
+      const fallbackRes = await fetch(`${baseUrl}/app.js`);
+      assert.equal(fallbackRes.status, 200, 'Expected /app.js to succeed via lib/client-bundle.js fallback when physical file is absent');
+      const fallbackText = await fallbackRes.text();
+      assert.match(fallbackText, /STORAGE_KEY = 'campusresolve-demo-v1'/);
+    } finally {
+      appAsset.filePath = origPath;
+      appAsset.file = origFile;
     }
   });
 });

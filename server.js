@@ -2,13 +2,15 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const triageHandler = require('./api/triage');
+const clientBundle = require('./lib/client-bundle');
 
 const ROOT = __dirname;
 const PUBLIC_ASSETS = new Map([
   ['/', { file: 'index.html', filePath: path.join(__dirname, 'index.html'), type: 'text/html; charset=utf-8' }],
   ['/index.html', { file: 'index.html', filePath: path.join(__dirname, 'index.html'), type: 'text/html; charset=utf-8' }],
   ['/styles.css', { file: 'styles.css', filePath: path.join(__dirname, 'styles.css'), type: 'text/css; charset=utf-8' }],
-  ['/app.js', { file: 'app.js', filePath: path.join(__dirname, 'app.js'), type: 'application/javascript; charset=utf-8' }],
+  ['/app.js', { file: 'app.js', filePath: path.join(__dirname, 'app.js'), type: 'application/javascript; charset=utf-8', fallback: () => clientBundle }],
+  ['/client.js', { file: 'app.js', filePath: path.join(__dirname, 'app.js'), type: 'application/javascript; charset=utf-8', fallback: () => clientBundle }],
   ['/csv.js', { file: 'csv.js', filePath: path.join(__dirname, 'csv.js'), type: 'application/javascript; charset=utf-8' }],
   ['/favicon.svg', { file: 'favicon.svg', filePath: path.join(__dirname, 'favicon.svg'), type: 'image/svg+xml' }],
   ['/favicon.ico', { file: 'favicon.svg', filePath: path.join(__dirname, 'favicon.svg'), type: 'image/svg+xml' }],
@@ -89,6 +91,28 @@ function readRequestBody(req, maxBytes) {
   });
 }
 
+async function readAssetContent(asset) {
+  const candidates = [
+    asset.filePath,
+    path.join(ROOT, asset.file),
+    path.join(process.cwd(), asset.file),
+  ].filter(Boolean);
+  for (const candidate of candidates) {
+    try {
+      return await fs.promises.readFile(candidate);
+    } catch {
+      // Try next candidate path or embedded bundle fallback
+    }
+  }
+  if (typeof asset.fallback === 'function') {
+    const fallbackText = asset.fallback();
+    if (typeof fallbackText === 'string' && fallbackText.length > 0) {
+      return Buffer.from(fallbackText, 'utf8');
+    }
+  }
+  throw new Error(`Asset unavailable: ${asset.file}`);
+}
+
 async function handleRequest(req, res) {
   try {
     applySecurityHeaders(res);
@@ -147,8 +171,7 @@ async function handleRequest(req, res) {
       return;
     }
 
-    const filePath = asset.filePath || path.join(ROOT, asset.file);
-    const content = await fs.promises.readFile(filePath);
+    const content = await readAssetContent(asset);
     res.statusCode = 200;
     res.setHeader('Content-Type', asset.type);
     res.setHeader('Cache-Control', 'no-cache');

@@ -148,6 +148,8 @@ class MiniElement {
     while (curr) {
       if (selector === '[data-go]' && curr.dataset && curr.dataset.go) return curr;
       if (selector === '[data-open-id]' && curr.dataset && curr.dataset.openId) return curr;
+      if (selector === '[data-metric-action]' && curr.dataset && curr.dataset.metricAction) return curr;
+      if (selector === '[data-category-filter]' && curr.dataset && curr.dataset.categoryFilter) return curr;
       curr = curr.parentElement;
     }
     return null;
@@ -187,6 +189,15 @@ class MiniDocument {
     }
     if (selector === '.demo-banner') {
       return this._demoBanner;
+    }
+    if (selector === '.small-select') {
+      return this._smallSelect;
+    }
+    if (selector === '.avatar-button') {
+      return this._avatarButton;
+    }
+    if (selector === '.workspace-switch') {
+      return this._workspaceSwitch;
     }
     return this.querySelectorAll(selector)[0] || null;
   }
@@ -287,6 +298,9 @@ class MiniDocument {
       if (el.classList.contains('sample-prompt')) this._samplePrompts.push(el);
       if (el.classList.contains('close-modal')) this._closeModals.push(el);
       if (el.classList.contains('close-detail')) this._closeDetails.push(el);
+      if (el.classList.contains('small-select')) this._smallSelect = el;
+      if (el.classList.contains('avatar-button')) this._avatarButton = el;
+      if (el.classList.contains('workspace-switch')) this._workspaceSwitch = el;
     }
 
     const reportModal = this.getElementById('report-modal');
@@ -448,7 +462,16 @@ async function runSmokeSuite() {
     document.getElementById('advance-status').click();
     assert.match(document.getElementById('detail-content').innerHTML, /status-reopened/);
 
-    console.log('Browser smoke suite passed: initialization, focus/Escape, mobile nav, demo triage, XSS escaping, duplicate guard, filters, and reopen workflow verified.');
+    // 8. Activity chart range selector, profile avatar button, and workspace switch
+    assert.equal(document.getElementById('week-total').textContent, '42');
+    document.querySelector('.small-select').click();
+    assert.equal(document.getElementById('week-total').textContent, '80');
+    document.querySelector('.avatar-button').click();
+    assert.equal(document.getElementById('page-audit').classList.contains('hidden'), false);
+    document.querySelector('.workspace-switch').click();
+    assert.equal(document.getElementById('page-overview').classList.contains('hidden'), false);
+
+    console.log('Browser smoke suite passed: initialization, focus/Escape, mobile nav, demo triage, XSS escaping, duplicate guard, filters, reopen workflow, and interactive header/chart controls verified.');
   } finally {
     if (prevKey !== undefined) process.env.GEMINI_API_KEY = prevKey;
     await new Promise((resolve) => server.close(resolve));
