@@ -7,8 +7,9 @@ CampusResolve demonstrates a campus-incident workflow: report an issue, receive 
 ## Current capabilities
 
 - Responsive operator workspace: overview, incident register, AI triage, recurring-fault review and local demo audit timeline.
-- Resource and trust views: About, FAQ, Help Center, Contact, Privacy and Terms notes.
-- Persistent Light, Dark and System appearance preferences.
+- Workspace tools: overview, incident register, AI triage, recurring-fault review, local demo audit timeline and a product-specific FAQ.
+- Resource and trust views: About, Help Center, Contact, Privacy and Terms notes.
+- Persistent Light, Dark and System appearance preferences, including a neutral near-black dark theme.
 - Synthetic demo records with search, category/status/priority filters and CSV export.
 - Report creation, triage review, workflow status progression, resolution verification note and reopening reason.
 - Explicitly labeled deterministic demo fallback when live Gemini is not configured or unavailable.
@@ -91,3 +92,8 @@ See [DATA_SOURCES.md](./DATA_SOURCES.md) for open-data candidates, license check
 - `server.js`: local Node server.
 - `tests/`: executable tests.
 - `SECURITY.md`: security limitations and reporting guidance.
+
+
+## Product purpose and FAQ
+
+CampusResolve was created as a prototype to demonstrate a more traceable campus-facilities workflow: capture a report, review an advisory triage, inspect possible repeat patterns, move work through statuses and record a local verification timeline. The Workspace FAQ explains this purpose, each workspace area, the NMIET demo label, AI/data boundaries and what would be required before any real institutional use. All bundled incident examples remain synthetic; no live campus integration or external dataset is currently claimed.
