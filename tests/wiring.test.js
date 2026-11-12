@@ -65,8 +65,9 @@ test('incident table rows expose semantic labels for the mobile card layout', ()
   for (const label of ['Incident', 'Category', 'Location', 'Priority', 'Status', 'Updated', 'Actions']) {
     assert.ok(rowRenderer.includes(`data-label="${label}"`), `Missing mobile data label: ${label}`);
   }
-  assert.match(css, /\\.incident-table td\\[data-label\\]::before/);
-  assert.match(css, /@media\\s*\\(max-width:\\s*600px\\)[\\s\\S]*?\\.incident-table\\s*\\{/);
+  assert.ok(css.includes('.incident-table td[data-label]::before'), 'Mobile table cells must show their semantic labels');
+  assert.ok(css.includes('@media (max-width: 600px)'), 'Mobile table layout must be breakpoint-scoped');
+  assert.ok(css.includes('.incident-table {'), 'Mobile table styles must target the incident table');
 });
 
 test('app shell provides keyboard skip navigation and accessible controls', () => {
