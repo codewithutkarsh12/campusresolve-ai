@@ -342,9 +342,15 @@
     activePage = page;
     document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
     $(`page-${page}`).classList.remove('hidden');
-    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.toggle('active', btn.dataset.page === page));
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      const current = btn.dataset.page === page;
+      btn.classList.toggle('active', current);
+      btn.setAttribute?.('aria-current', current ? 'page' : 'false');
+    });
     $('breadcrumb-current').textContent = ({ overview: 'Overview', incidents: 'Incidents', triage: 'AI triage', recurring: 'Recurring faults', audit: 'Audit trail', how: 'How it works' })[page];
     $('sidebar').classList.remove('open');
+    $('mobile-menu').setAttribute?.('aria-expanded', 'false');
+    $('mobile-menu').setAttribute?.('aria-label', 'Open navigation');
     if (page === 'overview') renderOverview();
     if (page === 'incidents') renderAllTable();
     if (page === 'recurring') renderRecurring();
@@ -661,7 +667,11 @@
       toast('Activity timeframe updated', `Showing synthetic activity for the last ${activityRange} days.`);
     });
   }
-  $('mobile-menu').addEventListener('click', () => $('sidebar').classList.toggle('open'));
+  $('mobile-menu').addEventListener('click', () => {
+    const isOpen = $('sidebar').classList.toggle('open');
+    $('mobile-menu').setAttribute?.('aria-expanded', String(isOpen));
+    $('mobile-menu').setAttribute?.('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+  });
   $('new-report-top').addEventListener('click', openReportModal);
   $('new-report-incident').addEventListener('click', openReportModal);
   $('help-top').addEventListener('click', () => setPage('how'));
@@ -709,6 +719,8 @@
       if (!$('report-modal').classList.contains('hidden')) closeModal('report-modal');
       if (!$('detail-modal').classList.contains('hidden')) closeModal('detail-modal');
       $('sidebar').classList.remove('open');
+      $('mobile-menu').setAttribute?.('aria-expanded', 'false');
+      $('mobile-menu').setAttribute?.('aria-label', 'Open navigation');
     }
   });
 
