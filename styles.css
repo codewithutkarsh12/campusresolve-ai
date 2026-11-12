@@ -342,3 +342,69 @@ select:focus-visible, textarea:focus-visible {
 }
 .small-select:hover { border-color: var(--line-dark); background: #fff; }
 .small-select:focus-visible { outline: 3px solid #8bbd48; outline-offset: 3px; }
+
+/* Readability pass across all six product views. */
+.panel-heading p,
+.attention-desc,
+.attention-time,
+.list-meta,
+.metric-foot,
+.category-line-title,
+.category-line-count,
+.recurring-item-meta,
+.prevention-item p,
+.audit-event p,
+.audit-event time,
+.how-card p,
+.transparency-row p,
+.audit-callout p,
+.field-help,
+.privacy-note,
+.modal-heading p,
+.detail-description,
+.detail-timeline-item {
+  font-size: 12px;
+}
+.metric-label,
+.filter-select,
+.field-label,
+.incident-table th {
+  font-size: 11px;
+}
+.incident-table td,
+.incident-title,
+.category-name,
+.attention-title,
+.recurring-item-title,
+.prevention-item strong,
+.audit-event strong,
+.transparency-row strong {
+  font-size: 13px;
+}
+.incident-id,
+.supporting-ids,
+.status-label,
+.step-chip,
+.insight-tag {
+  font-size: 10px;
+}
+@media (max-width: 600px) {
+  .panel-heading p,
+  .attention-desc,
+  .attention-time,
+  .metric-foot,
+  .category-line-title,
+  .recurring-item-meta,
+  .prevention-item p,
+  .audit-event p,
+  .how-card p,
+  .transparency-row p,
+  .field-help,
+  .privacy-note,
+  .modal-heading p,
+  .detail-description,
+  .detail-timeline-item {
+    font-size: 11px;
+  }
+  .incident-table td { font-size: 12px; }
+}
