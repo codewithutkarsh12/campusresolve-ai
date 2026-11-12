@@ -452,6 +452,7 @@ select:focus-visible, textarea:focus-visible {
 @media(max-width:1050px){.topbar-actions{gap:12px}.resource-grid,.help-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.theme-control span{display:none}.topbar-actions{gap:10px}.demo-pill{display:none}}
 @media(max-width:600px){.resource-grid{grid-template-columns:1fr}.resource-footer{align-items:flex-start;flex-direction:column}.contact-panel{flex-direction:column}.theme-control select{min-height:38px}.resource-hero h2{font-size:27px}}
+ :root[data-theme="light"]{color-scheme:light}
 :root[data-theme="dark"]{
   color-scheme:dark;
   --ink:#e8f0e9;--ink-soft:#c3d0c6;--muted:#9aab9f;--bg:#101914;--paper:#19271f;
