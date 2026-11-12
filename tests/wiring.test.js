@@ -89,7 +89,7 @@ test('resource navigation has matching About, FAQ, Help, Contact, Privacy and Te
   }
   assert.match(html, /<details class="panel faq-item">/);
   assert.match(html, /does not have a connected support inbox or message-submission backend/);
-  assert.match(html, /do not enter real student records/);
+  assert.match(html, /do not enter real student records/i);
 });
 
 test('appearance control supports system, light and dark preferences with persistent theme state', () => {
