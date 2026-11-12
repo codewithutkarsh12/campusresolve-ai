@@ -100,5 +100,6 @@ test('appearance control supports system, light and dark preferences with persis
   for (const value of ['system', 'light', 'dark']) assert.match(html, new RegExp('<option value="' + value + '">'));
   assert.match(appJs, /campusresolve-theme-v1/);
   assert.match(appJs, /prefers-color-scheme: dark/);
+  assert.match(appJs, /help-top.*setPage\('help'\)/);
   assert.match(css, /:root\[data-theme="dark"\]/);
 });
