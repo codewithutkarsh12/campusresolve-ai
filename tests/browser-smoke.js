@@ -391,6 +391,25 @@ async function runSmokeSuite() {
     assert.doesNotMatch(document._overviewEyebrow.innerHTML, /FRIDAY, OCTOBER 23/);
     assert.match(document._overviewEyebrow.innerHTML, /CAMPUS OPERATIONS/);
 
+    // 1b. Resource navigation and appearance preference persistence
+    const aboutNav = document.querySelectorAll('.nav-item').find((item) => item.dataset.page === 'about');
+    const faqNav = document.querySelectorAll('.nav-item').find((item) => item.dataset.page === 'faq');
+    assert.ok(aboutNav, 'Expected About navigation item');
+    assert.ok(faqNav, 'Expected FAQ navigation item');
+    aboutNav.click();
+    assert.equal(document.getElementById('page-about').classList.contains('hidden'), false);
+    faqNav.click();
+    assert.equal(document.getElementById('page-faq').classList.contains('hidden'), false);
+    const themeSelect = document.getElementById('theme-select');
+    assert.ok(themeSelect, 'Expected appearance selector');
+    assert.equal(themeSelect.value, 'system');
+    themeSelect.value = 'dark';
+    themeSelect.dispatchEvent({ type: 'change', bubbles: false });
+    assert.equal(localStorage.getItem('campusresolve-theme-v1'), 'dark');
+    themeSelect.value = 'light';
+    themeSelect.dispatchEvent({ type: 'change', bubbles: false });
+    assert.equal(localStorage.getItem('campusresolve-theme-v1'), 'light');
+
     // 2. Dialog focus and Escape behavior
     document.getElementById('new-report-top').click();
     assert.equal(document.getElementById('report-modal').classList.contains('hidden'), false);
