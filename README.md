@@ -6,7 +6,9 @@ CampusResolve demonstrates a campus-incident workflow: report an issue, receive 
 
 ## Current capabilities
 
-- Responsive dashboard, incident register, triage workbench, recurrence view, audit view and product transparency page.
+- Responsive operator workspace: overview, incident register, AI triage, recurring-fault review and local demo audit timeline.
+- Resource and trust views: About, FAQ, Help Center, Contact, Privacy and Terms notes.
+- Persistent Light, Dark and System appearance preferences.
 - Synthetic demo records with search, category/status/priority filters and CSV export.
 - Report creation, triage review, workflow status progression, resolution verification note and reopening reason.
 - Explicitly labeled deterministic demo fallback when live Gemini is not configured or unavailable.
@@ -63,7 +65,7 @@ If the key is missing, the API returns a controlled `AI_NOT_CONFIGURED` response
 - `npm run test:browser`: Browser smoke test.
 - `.github/workflows/ci.yml`: runs lint and the test suite on `main` pushes and pull requests.
 
-The test suite does not prove that live Gemini credentials are valid or that the deployed URL resolves. Those must be verified in the deployment environment.
+The test suite does not prove that live Gemini credentials are valid or that the deployed URL resolves. Theme contrast and visual behavior still require real-browser review in both light and dark modes. Those must be verified in the deployment environment.
 
 ## Important limits — not production-ready for real reports
 
