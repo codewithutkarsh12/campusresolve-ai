@@ -239,7 +239,7 @@
 
   function ticketRow(t) {
     const cat = categoryInfo(t.category);
-    return `<tr data-open-id="${escapeHTML(t.id)}" style="cursor:pointer"><td><div class="incident-cell"><span class="category-icon ${cat.color}">${cat.icon}</span><div><div class="incident-title">${escapeHTML(t.title)}</div><div class="incident-id">${escapeHTML(t.id)}</div></div></div></td><td><span class="category-name"><i class="mini-dot"></i>${escapeHTML(cat.label)}</span></td><td class="location-cell">${escapeHTML(t.location)}</td><td>${priorityBadge(t.priority)}</td><td>${statusBadge(t.status)}</td><td>${escapeHTML(ageLabel(t.minutesAgo ?? 1))}</td><td><button class="table-more" data-open-id="${escapeHTML(t.id)}" aria-label="Open ${escapeHTML(t.id)} details">···</button></td></tr>`;
+    return `<tr data-open-id="${escapeHTML(t.id)}" style="cursor:pointer"><td data-label="Incident"><div class="incident-cell"><span class="category-icon ${cat.color}">${cat.icon}</span><div><div class="incident-title">${escapeHTML(t.title)}</div><div class="incident-id">${escapeHTML(t.id)}</div></div></div></td><td data-label="Category"><span class="category-name"><i class="mini-dot"></i>${escapeHTML(cat.label)}</span></td><td class="location-cell" data-label="Location">${escapeHTML(t.location)}</td><td data-label="Priority">${priorityBadge(t.priority)}</td><td data-label="Status">${statusBadge(t.status)}</td><td data-label="Updated">${escapeHTML(ageLabel(t.minutesAgo ?? 1))}</td><td data-label="Actions"><button class="table-more" data-open-id="${escapeHTML(t.id)}" aria-label="Open ${escapeHTML(t.id)} details">···</button></td></tr>`;
   }
   function renderRecentTable() {
     const q = ($('overview-search')?.value || '').trim().toLowerCase();
