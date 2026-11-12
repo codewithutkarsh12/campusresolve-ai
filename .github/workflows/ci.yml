@@ -23,3 +23,5 @@ jobs:
         run: npm run lint
       - name: Run automated tests
         run: npm test
+      - name: Run DOM and server smoke suite
+        run: npm run test:browser
