@@ -103,3 +103,29 @@ test('appearance control supports system, light and dark preferences with persis
   assert.match(appJs, /help-top.*setPage\('help'\)/);
   assert.match(css, /:root\[data-theme="dark"\]/);
 });
+
+
+test('FAQ is part of Workspace navigation and explains the real product purpose', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const workspaceMatch = html.match(/<div class="nav-label">WORKSPACE<\/div>\s*<nav class="nav-list" aria-label="Main navigation">([\s\S]*?)<\/nav>/);
+  assert.ok(workspaceMatch, 'Workspace navigation must exist');
+  assert.match(workspaceMatch[1], /data-page="faq"/, 'FAQ must be reachable from Workspace');
+  const faqStart = html.indexOf('<section id="page-faq"');
+  const faqEnd = html.indexOf('<section id="page-help"', faqStart);
+  const faq = html.slice(faqStart, faqEnd);
+  assert.match(faq, /Why was CampusResolve AI created\?/);
+  assert.match(faq, /What does each Workspace section do\?/);
+  assert.match(faq, /Why does the workspace say NMIET Campus\?/);
+  assert.match(faq, /synthetic examples only/i);
+  assert.ok((faq.match(/<details class="panel faq-item"/g) || []).length >= 16, 'FAQ should contain complete, answered product guidance');
+});
+
+test('dark theme uses a neutral near-black palette across primary interface surfaces', () => {
+  const css = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  assert.match(css, /--bg:#08090B/i);
+  assert.match(css, /--paper:#101216/i);
+  assert.match(css, /--nav:#050607/i);
+  for (const selector of ['.topbar', '.sidebar', '.metric-card', '.incident-table', '.faq-item', '.modal-card', '.resource-hero']) {
+    assert.ok(css.includes(selector), 'Expected dark-theme coverage for ' + selector);
+  }
+});
