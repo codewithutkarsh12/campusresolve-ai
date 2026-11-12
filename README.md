@@ -6,14 +6,17 @@ CampusResolve demonstrates a campus-incident workflow: report an issue, receive 
 
 ## Current capabilities
 
-- Responsive dashboard, incident register, triage workbench, recurrence view, audit view and product transparency page.
+- Responsive operator workspace: overview, incident register, AI triage, recurring-fault review and local demo audit timeline.
+- Workspace tools: overview, incident register, AI triage, recurring-fault review, local demo audit timeline and a product-specific FAQ.
+- Resource and trust views: About, Help Center, Contact, Privacy and Terms notes.
+- Persistent Light, Dark and System appearance preferences, including a neutral near-black dark theme.
 - Synthetic demo records with search, category/status/priority filters and CSV export.
 - Report creation, triage review, workflow status progression, resolution verification note and reopening reason.
 - Explicitly labeled deterministic demo fallback when live Gemini is not configured or unavailable.
 - Optional server-side Gemini API endpoint at `POST /api/triage`.
 - Strict request bounds and output schema checks, safety-priority override, request timeout, safe error responses, and best-effort in-memory rate limiting.
 - Safe CSV escaping, escaped user-generated text, hardened HTTP headers, and a restrictive Content Security Policy for the deployment.
-- Automated unit, API, server, static wiring and security regression tests; a Chromium browser smoke suite is available separately.
+- Automated unit, API, server, static wiring and security regression tests; a lightweight DOM/server smoke suite is also available.
 
 ## Architecture
 
@@ -47,7 +50,7 @@ Optional browser test:
 npm run test:browser
 ```
 
-The browser smoke test verifies initial rendering, mobile navigation, triage fallback, XSS-safe display, preventing repeated use of a triage result, filtering, and the reopen-reason workflow. It does not replace a full device/browser matrix or manual screen-reader testing.
+The smoke test uses a small DOM compatibility harness plus the local HTTP server; it verifies initial rendering, mobile navigation, triage fallback, XSS-safe display, preventing repeated use of a triage result, filtering, and the reopen-reason workflow. It does not launch Chromium and does not replace a full device/browser matrix or manual screen-reader testing. CI runs this suite on pull requests.
 
 ## Gemini configuration
 
@@ -63,7 +66,7 @@ If the key is missing, the API returns a controlled `AI_NOT_CONFIGURED` response
 - `npm run test:browser`: Browser smoke test.
 - `.github/workflows/ci.yml`: runs lint and the test suite on `main` pushes and pull requests.
 
-The test suite does not prove that live Gemini credentials are valid or that the deployed URL resolves. Those must be verified in the deployment environment.
+The test suite does not prove that live Gemini credentials are valid or that the deployed URL resolves. Theme contrast and visual behavior still require real-browser review in both light and dark modes. Those must be verified in the deployment environment.
 
 ## Important limits — not production-ready for real reports
 
@@ -77,6 +80,10 @@ The Vercel configuration serves the static frontend and defines `api/triage.js` 
 
 Do not claim that deployment, live AI, authentication, persistent storage, or a security review is complete without direct verification.
 
+## Data source register
+
+See [DATA_SOURCES.md](./DATA_SOURCES.md) for open-data candidates, license checks and the rule that synthetic incident records must never be presented as real campus reports.
+
 ## Project files
 
 - `index.html`, `styles.css`, `app.js`, `csv.js`: canonical frontend.
@@ -85,3 +92,8 @@ Do not claim that deployment, live AI, authentication, persistent storage, or a 
 - `server.js`: local Node server.
 - `tests/`: executable tests.
 - `SECURITY.md`: security limitations and reporting guidance.
+
+
+## Product purpose and FAQ
+
+CampusResolve was created as a prototype to demonstrate a more traceable campus-facilities workflow: capture a report, review an advisory triage, inspect possible repeat patterns, move work through statuses and record a local verification timeline. The Workspace FAQ explains this purpose, each workspace area, the NMIET demo label, AI/data boundaries and what would be required before any real institutional use. All bundled incident examples remain synthetic; no live campus integration or external dataset is currently claimed.

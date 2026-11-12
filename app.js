@@ -124,6 +124,29 @@
 
   const $ = (id) => document.getElementById(id);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
+  const THEME_KEY = 'campusresolve-theme-v1';
+  function readThemePreference() {
+    try {
+      const saved = localStorage.getItem(THEME_KEY);
+      return ['light', 'dark', 'system'].includes(saved) ? saved : 'system';
+    } catch {
+      return 'system';
+    }
+  }
+  let themePreference = readThemePreference();
+  function applyThemePreference(preference, persist = true) {
+    themePreference = ['light', 'dark', 'system'].includes(preference) ? preference : 'system';
+    const systemDark = Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const resolvedTheme = themePreference === 'system' ? (systemDark ? 'dark' : 'light') : themePreference;
+    document.documentElement?.setAttribute?.('data-theme', resolvedTheme);
+    document.documentElement?.setAttribute?.('data-theme-preference', themePreference);
+    const control = $('theme-select');
+    if (control) control.value = themePreference;
+    if (persist) {
+      try { localStorage.setItem(THEME_KEY, themePreference); } catch { /* Theme still applies for this session. */ }
+    }
+  }
+
   const isOpen = (ticket) => ticket.status !== 'resolved';
   const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const normalizeLocation = (value) => String(value || '').toLowerCase().replace(/[.,·]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -239,7 +262,7 @@
 
   function ticketRow(t) {
     const cat = categoryInfo(t.category);
-    return `<tr data-open-id="${escapeHTML(t.id)}" style="cursor:pointer"><td><div class="incident-cell"><span class="category-icon ${cat.color}">${cat.icon}</span><div><div class="incident-title">${escapeHTML(t.title)}</div><div class="incident-id">${escapeHTML(t.id)}</div></div></div></td><td><span class="category-name"><i class="mini-dot"></i>${escapeHTML(cat.label)}</span></td><td class="location-cell">${escapeHTML(t.location)}</td><td>${priorityBadge(t.priority)}</td><td>${statusBadge(t.status)}</td><td>${escapeHTML(ageLabel(t.minutesAgo ?? 1))}</td><td><button class="table-more" data-open-id="${escapeHTML(t.id)}" aria-label="Open ${escapeHTML(t.id)} details">···</button></td></tr>`;
+    return `<tr data-open-id="${escapeHTML(t.id)}" style="cursor:pointer"><td data-label="Incident"><div class="incident-cell"><span class="category-icon ${cat.color}">${cat.icon}</span><div><div class="incident-title">${escapeHTML(t.title)}</div><div class="incident-id">${escapeHTML(t.id)}</div></div></div></td><td data-label="Category"><span class="category-name"><i class="mini-dot"></i>${escapeHTML(cat.label)}</span></td><td class="location-cell" data-label="Location">${escapeHTML(t.location)}</td><td data-label="Priority">${priorityBadge(t.priority)}</td><td data-label="Status">${statusBadge(t.status)}</td><td data-label="Updated">${escapeHTML(ageLabel(t.minutesAgo ?? 1))}</td><td data-label="Actions"><button class="table-more" data-open-id="${escapeHTML(t.id)}" aria-label="Open ${escapeHTML(t.id)} details">···</button></td></tr>`;
   }
   function renderRecentTable() {
     const q = ($('overview-search')?.value || '').trim().toLowerCase();
@@ -338,13 +361,19 @@
     $('audit-list').innerHTML = audit.slice(0, 30).map(e => `<div class="audit-event"><div class="audit-event-top"><strong>${escapeHTML(e.action)}</strong><time>${escapeHTML(relativeTime(e.time))}</time></div><p><strong>${escapeHTML(e.actor)}</strong> · <span class="audit-target">${escapeHTML(e.target)}</span> · ${escapeHTML(e.detail || '')}</p></div>`).join('');
   }
   function setPage(page) {
-    if (!['overview', 'incidents', 'triage', 'recurring', 'audit', 'how'].includes(page)) page = 'overview';
+    if (!['overview', 'incidents', 'triage', 'recurring', 'audit', 'how', 'about', 'faq', 'help', 'contact', 'privacy', 'terms'].includes(page)) page = 'overview';
     activePage = page;
     document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
     $(`page-${page}`).classList.remove('hidden');
-    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.toggle('active', btn.dataset.page === page));
-    $('breadcrumb-current').textContent = ({ overview: 'Overview', incidents: 'Incidents', triage: 'AI triage', recurring: 'Recurring faults', audit: 'Audit trail', how: 'How it works' })[page];
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      const current = btn.dataset.page === page;
+      btn.classList.toggle('active', current);
+      btn.setAttribute?.('aria-current', current ? 'page' : 'false');
+    });
+    $('breadcrumb-current').textContent = ({ overview: 'Overview', incidents: 'Incidents', triage: 'AI triage', recurring: 'Recurring faults', audit: 'Audit trail', how: 'How it works', about: 'About', faq: 'FAQ', help: 'Help center', contact: 'Contact', privacy: 'Privacy', terms: 'Terms' })[page];
     $('sidebar').classList.remove('open');
+    $('mobile-menu').setAttribute?.('aria-expanded', 'false');
+    $('mobile-menu').setAttribute?.('aria-label', 'Open navigation');
     if (page === 'overview') renderOverview();
     if (page === 'incidents') renderAllTable();
     if (page === 'recurring') renderRecurring();
@@ -661,13 +690,31 @@
       toast('Activity timeframe updated', `Showing synthetic activity for the last ${activityRange} days.`);
     });
   }
-  $('mobile-menu').addEventListener('click', () => $('sidebar').classList.toggle('open'));
+  $('mobile-menu').addEventListener('click', () => {
+    const isOpen = $('sidebar').classList.toggle('open');
+    $('mobile-menu').setAttribute?.('aria-expanded', String(isOpen));
+    $('mobile-menu').setAttribute?.('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+  });
   $('new-report-top').addEventListener('click', openReportModal);
   $('new-report-incident').addEventListener('click', openReportModal);
-  $('help-top').addEventListener('click', () => setPage('how'));
+  $('help-top').addEventListener('click', () => setPage('help'));
   $('banner-dismiss').addEventListener('click', () => document.querySelector('.demo-banner').classList.add('hidden'));
   $('reset-button').addEventListener('click', resetDemo);
   $('reset-button').title = 'Reset synthetic demo data';
+  const themeSelect = $('theme-select');
+  applyThemePreference(themePreference, false);
+  if (themeSelect) {
+    themeSelect.addEventListener('change', () => applyThemePreference(themeSelect.value));
+  }
+  const colorSchemeQuery = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+  if (colorSchemeQuery) {
+    const handleSystemThemeChange = () => {
+      if (themePreference === 'system') applyThemePreference('system', false);
+    };
+    if (typeof colorSchemeQuery.addEventListener === 'function') colorSchemeQuery.addEventListener('change', handleSystemThemeChange);
+    else if (typeof colorSchemeQuery.addListener === 'function') colorSchemeQuery.addListener(handleSystemThemeChange);
+  }
+
   $('refresh-audit').addEventListener('click', () => { renderAudit(); toast('History refreshed', 'Displayed the latest local demo events.'); });
   $('overview-search').addEventListener('input', renderRecentTable);
   ['incident-search', 'filter-category', 'filter-status', 'filter-priority'].forEach(id => $(id).addEventListener(id === 'incident-search' ? 'input' : 'change', renderAllTable));
@@ -709,6 +756,8 @@
       if (!$('report-modal').classList.contains('hidden')) closeModal('report-modal');
       if (!$('detail-modal').classList.contains('hidden')) closeModal('detail-modal');
       $('sidebar').classList.remove('open');
+      $('mobile-menu').setAttribute?.('aria-expanded', 'false');
+      $('mobile-menu').setAttribute?.('aria-label', 'Open navigation');
     }
   });
 
