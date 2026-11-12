@@ -67,3 +67,20 @@ A calm, trustworthy campus-operations workspace. The interface should communicat
 - Contact links to the repository issue tracker because no support inbox or message-submission backend exists.
 - Privacy and Terms views describe current prototype behavior only; they are not a legal certification or production privacy policy.
 - Keep the original forest-green identity and neutral operational surfaces. Avoid adding gradients, third-party fonts or decorative animation solely for novelty.
+
+
+## Near-black dark appearance
+
+The explicit Dark preference uses a neutral near-black palette rather than a green-tinted canvas:
+- App background: #08090B.
+- Main surfaces: #101216; elevated controls: #0B0D11.
+- Sidebar: #050607.
+- Borders: #252A33 and #363D49.
+- Primary text: #F3F5F7; supporting text: #A0A7B2.
+- Lime remains a restrained action/focus accent, not a large decorative fill.
+
+Apply the palette consistently to the sidebar, sticky top bar, metric panels, incident table, inputs, dialogs, FAQ, help and trust pages, status chips, empty states and feedback. Preserve status meaning with readable text as well as color. Verify keyboard focus, reduced motion, mobile layouts and contrast in a real browser before calling the visual review complete.
+
+## Workspace FAQ content contract
+
+The FAQ must explain the documented product purpose (report → advisory triage → repeat-pattern review → workflow follow-through → local event timeline), every Workspace area, the NMIET demo label, synthetic/localStorage data, optional server-side Gemini processing, human review, emergency limitations and missing production controls. Never imply live campus integration, real incident statistics, an immutable audit log or production readiness.
