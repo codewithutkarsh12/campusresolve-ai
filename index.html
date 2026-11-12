@@ -28,9 +28,18 @@
         <button class="nav-item" data-page="recurring"><span class="nav-icon">↻</span><span>Recurring faults</span></button>
         <button class="nav-item" data-page="audit"><span class="nav-icon">≡</span><span>Audit trail</span></button>
       </nav>
-      <div class="nav-label nav-label-spaced">SYSTEM</div>
-      <nav class="nav-list" aria-label="System navigation">
+      <div class="nav-label nav-label-spaced">RESOURCES</div>
+      <nav class="nav-list" aria-label="Resources navigation">
         <button class="nav-item" data-page="how"><span class="nav-icon">ⓘ</span><span>How it works</span></button>
+        <button class="nav-item" data-page="about"><span class="nav-icon">◎</span><span>About</span></button>
+        <button class="nav-item" data-page="faq"><span class="nav-icon">?</span><span>FAQ</span></button>
+        <button class="nav-item" data-page="help"><span class="nav-icon">⌘</span><span>Help center</span></button>
+        <button class="nav-item" data-page="contact"><span class="nav-icon">✉</span><span>Contact</span></button>
+      </nav>
+      <div class="nav-label nav-label-spaced">TRUST &amp; POLICY</div>
+      <nav class="nav-list" aria-label="Trust and policy navigation">
+        <button class="nav-item" data-page="privacy"><span class="nav-icon">◈</span><span>Privacy</span></button>
+        <button class="nav-item" data-page="terms"><span class="nav-icon">≡</span><span>Terms</span></button>
       </nav>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-note"><span class="note-icon">✦</span><div><strong>Built to close the loop.</strong><p>From first report to verified fix—with evidence at every step.</p></div></div>
@@ -41,7 +50,7 @@
       <header class="topbar">
         <button id="mobile-menu" class="mobile-menu" aria-label="Open navigation" aria-expanded="false">☰</button>
         <div class="breadcrumb"><span>Workspace</span><span class="crumb-sep">/</span><strong id="breadcrumb-current">Overview</strong></div>
-        <div class="topbar-actions"><span class="demo-pill"><span class="live-dot"></span> INTERACTIVE DEMO</span><button class="help-button" id="help-top">How this works <span>↗</span></button><button class="avatar-button" aria-label="Demo profile">UB</button></div>
+        <div class="topbar-actions"><label class="theme-control" for="theme-select"><span>Appearance</span><select id="theme-select" aria-label="Choose appearance"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><span class="demo-pill"><span class="live-dot"></span> INTERACTIVE DEMO</span><button class="help-button" id="help-top">Help center <span>↗</span></button><button class="avatar-button" aria-label="Demo profile">UB</button></div>
       </header>
 
       <div class="page-container">
@@ -86,6 +95,60 @@
           <div class="page-heading"><div><div class="eyebrow">PRODUCT NOTES <span class="eyebrow-line"></span> TRANSPARENCY</div><h1>How CampusResolve works</h1><p class="page-subtitle">A controlled workflow: AI proposes, application policy validates, people approve.</p></div></div>
           <div class="how-grid"><article class="panel how-card"><div class="how-number">01</div><div class="how-icon">✳</div><h2>Understand</h2><p>Gemini can extract supported facts from the report and provide a structured triage recommendation. The browser prototype falls back to transparent keyword rules when no backend is configured.</p></article><article class="panel how-card"><div class="how-number">02</div><div class="how-icon">⌕</div><h2>Investigate</h2><p>Search similar reports and group repeat incidents by location and category. Candidates are evidence to review—not an automatic merge decision.</p></article><article class="panel how-card"><div class="how-number">03</div><div class="how-icon">⚖</div><h2>Control</h2><p>Deterministic application logic validates inputs, applies routing policies and restricts workflow transitions. The model cannot grant itself permissions.</p></article><article class="panel how-card"><div class="how-number">04</div><div class="how-icon">✓</div><h2>Verify</h2><p>Staff document progress and resolution evidence. The workflow supports review, closure and reopening rather than trusting an AI-generated claim that a fix happened.</p></article></div>
           <article class="panel transparency-panel"><div class="panel-heading"><div><h2>What is real in this prototype?</h2><p>Clear separation between implemented behavior and production requirements.</p></div></div><div class="transparency-row"><span class="state-mark implemented">✓</span><div><strong>Functional local demo</strong><p>Interactive filtering, report creation, demo triage, status transitions, recurring-pattern aggregation, CSV export and local event history.</p></div><span class="status-label status-implemented">Implemented</span></div><div class="transparency-row"><span class="state-mark backend">↗</span><div><strong>Optional Gemini backend</strong><p>The source includes a server-side API route. It requires a private GEMINI_API_KEY environment variable to enable live model analysis. Without it, the app uses a labelled demo fallback.</p></div><span class="status-label status-config">Needs configuration</span></div><div class="transparency-row"><span class="state-mark production">!</span><div><strong>Production identity and persistence</strong><p>Firebase Authentication, secure persistent records, server-enforced staff roles and tamper-resistant audit storage are not enabled in this standalone prototype.</p></div><span class="status-label status-config">Not yet configured</span></div></article>
+        </section>
+        
+        <section id="page-about" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">ABOUT <span class="eyebrow-line"></span> OUR PURPOSE</div><h1>Better campus operations start with better evidence.</h1><p class="page-subtitle">CampusResolve AI is a prototype for turning campus facility reports into clearer, reviewable work.</p></div></div>
+          <article class="panel resource-hero"><span class="resource-kicker">CAMPUS INCIDENT INTELLIGENCE</span><h2>From scattered reports to accountable resolution.</h2><p>CampusResolve brings incident intake, advisory triage, recurring-pattern review and resolution verification into one operator workspace. It is designed to help people make better-informed decisions—not to replace campus staff or emergency services.</p><div class="resource-pills"><span>Human-reviewed</span><span>Evidence-led</span><span>Safety-aware</span><span>Transparent demo</span></div></article>
+          <div class="resource-grid"><article class="panel resource-card"><span class="resource-icon">◎</span><h2>Our mission</h2><p>Make campus maintenance reports easier to understand, prioritize and follow through with a visible record of the work.</p></article><article class="panel resource-card"><span class="resource-icon">⚖</span><h2>Our principles</h2><p>Keep people accountable, show uncertainty, protect sensitive information and distinguish recommendations from verified outcomes.</p></article><article class="panel resource-card"><span class="resource-icon">⌁</span><h2>Our boundary</h2><p>This repository is an evaluation prototype. It is not a live campus service, emergency channel or secure multi-user incident platform.</p></article></div>
+          <div class="resource-footer"><span>Want to understand the workflow?</span><button class="text-link" data-go="how">How it works →</button></div>
+          <footer class="resource-legal-links"><button data-go="privacy">Privacy</button><button data-go="terms">Terms</button><button data-go="contact">Contact</button></footer>
+        </section>
+
+        <section id="page-faq" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">ANSWERS <span class="eyebrow-line"></span> FAQ</div><h1>Frequently asked questions</h1><p class="page-subtitle">Straight answers about the prototype, its AI features and its data boundaries.</p></div></div>
+          <div class="faq-list">
+            <details class="panel faq-item"><summary>Is CampusResolve AI a live campus reporting service?</summary><p>No. This repository is an interactive evaluation prototype. Its sample incidents are synthetic and must not be treated as live campus reports.</p></details>
+            <details class="panel faq-item"><summary>Does the AI make the final decision?</summary><p>No. Gemini output, when configured, is advisory. Application validation and deterministic safety rules still apply, and a person must review the recommendation and verify resolution.</p></details>
+            <details class="panel faq-item"><summary>What happens when Gemini is not configured?</summary><p>The interface uses a clearly labelled rules-based demo fallback. It is not a live model response and should not be interpreted as an operational risk assessment.</p></details>
+            <details class="panel faq-item"><summary>Where are incident records stored?</summary><p>Demo incident and audit records are stored in this browser's localStorage. They are not shared between users, server-backed or tamper-resistant, and can be changed or cleared by the browser user.</p></details>
+            <details class="panel faq-item"><summary>Can I submit real student or safety information?</summary><p>No. Use synthetic examples only. Do not enter student identities, private contact details, medical information, confidential descriptions, photographs or credentials.</p></details>
+            <details class="panel faq-item"><summary>Does CampusResolve replace emergency services?</summary><p>No. It is not an emergency reporting or response channel. For an immediate threat, follow your institution's official emergency procedures and contact the appropriate local emergency service.</p></details>
+            <details class="panel faq-item"><summary>Can I export the incident list?</summary><p>Yes. The Incidents view offers CSV export of the current synthetic demo records in this browser.</p></details>
+            <details class="panel faq-item"><summary>Is authentication and staff access control enabled?</summary><p>No. Production authentication, server-enforced roles, shared persistent records and tamper-resistant audit storage are not implemented in this prototype.</p></details>
+          </div>
+          <div class="resource-footer"><span>Still need help?</span><button class="text-link" data-go="help">Open the help center →</button></div>
+        </section>
+
+        <section id="page-help" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">SUPPORT <span class="eyebrow-line"></span> HELP CENTER</div><h1>Get more from the demo</h1><p class="page-subtitle">Short guides for exploring the current CampusResolve workflow.</p></div></div>
+          <div class="help-grid">
+            <article class="panel help-card"><span class="help-step">01 · REPORT</span><h2>Create a sample incident</h2><p>Choose <strong>New report</strong>, enter a synthetic title, description and location, then submit it for triage review.</p><button class="text-link" data-go="incidents">Open incidents →</button></article>
+            <article class="panel help-card"><span class="help-step">02 · REVIEW</span><h2>Review a triage recommendation</h2><p>Check the suggested category, urgency, evidence, missing fields and model source. Treat the recommendation as advisory.</p><button class="text-link" data-go="triage">Open AI triage →</button></article>
+            <article class="panel help-card"><span class="help-step">03 · FOLLOW THROUGH</span><h2>Move a ticket through its workflow</h2><p>Open an incident, review its timeline and add a work or verification note when the workflow requests one.</p><button class="text-link" data-go="incidents">Review the queue →</button></article>
+            <article class="panel help-card"><span class="help-step">04 · LEARN</span><h2>Explore repeat patterns</h2><p>Compare reports grouped by normalized location and category. Similarity is a review candidate, not proof of a shared root cause.</p><button class="text-link" data-go="recurring">View recurring faults →</button></article>
+            <article class="panel help-card"><span class="help-step">05 · EXPORT</span><h2>Export synthetic records</h2><p>Use the CSV export action in the incident manager. The export contains the current local demo records only.</p><button class="text-link" data-go="incidents">Go to incident manager →</button></article>
+            <article class="panel help-card"><span class="help-step">06 · RESET</span><h2>Restore the sample workspace</h2><p>Use the reset control in the sidebar to restore the bundled synthetic example records and local demo history.</p><button class="text-link" data-go="overview">Back to overview →</button></article>
+          </div>
+          <article class="panel help-notice"><strong>Need a production capability?</strong><p>Authentication, authorization, persistent shared records, secure evidence storage, global rate limiting and operational monitoring must be designed and verified before real campus use.</p><button class="text-link" data-go="how">Review prototype boundaries →</button></article>
+        </section>
+
+        <section id="page-contact" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">CONTACT <span class="eyebrow-line"></span> PROJECT FEEDBACK</div><h1>Help improve CampusResolve</h1><p class="page-subtitle">Use the project issue tracker for questions, bugs and feature suggestions.</p></div></div>
+          <article class="panel contact-panel"><div class="contact-icon">✉</div><div><h2>Contact the project maintainer</h2><p>This prototype does not have a connected support inbox or message-submission backend. The public GitHub issue tracker is the available project feedback channel.</p><a class="button button-primary" href="https://github.com/codewithutkarsh12/campusresolve-ai/issues" target="_blank" rel="noopener noreferrer">Open GitHub issues <span aria-hidden="true">↗</span></a></div></article>
+          <article class="panel help-notice"><strong>Please keep reports safe.</strong><p>Do not include student personal data, private contact details, confidential incident descriptions, credentials or sensitive attachments in public issues.</p></article>
+        </section>
+
+        <section id="page-privacy" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">TRUST <span class="eyebrow-line"></span> PRIVACY NOTES</div><h1>Privacy and data handling</h1><p class="page-subtitle">A plain-language description of how this prototype handles demo information.</p></div></div>
+          <article class="panel legal-panel"><h2>Use synthetic information only</h2><p>CampusResolve AI is an evaluation prototype. Do not enter real student records, personal identifiers, private contact details, medical information, confidential reports, credentials or sensitive photographs.</p><h2>Browser storage</h2><p>Incident records and the local demo audit timeline are stored in localStorage in the current browser. This storage is not a secure shared database, is not tamper-resistant and may be cleared by the browser user.</p><h2>Optional AI processing</h2><p>If a deployment owner configures the server-side Gemini integration, the report description and user-provided location submitted for triage are sent by the server to Google's Gemini API for analysis. Do not submit sensitive or identifying information.</p><h2>What is not implemented</h2><p>This prototype does not implement production authentication, server-enforced authorization, shared persistent records, secure evidence storage, a formal retention workflow or a privacy-request portal.</p><h2>Questions</h2><p>Use the public project issue tracker for non-sensitive questions. Do not post personal or confidential data in public issues.</p><button class="text-link" data-go="contact">Project contact →</button></article>
+          <footer class="resource-legal-links"><button data-go="terms">Terms</button><button data-go="faq">FAQ</button><button data-go="help">Help center</button></footer>
+        </section>
+
+        <section id="page-terms" class="page-section hidden">
+          <div class="page-heading"><div><div class="eyebrow">TRUST <span class="eyebrow-line"></span> USE NOTES</div><h1>Prototype terms and limitations</h1><p class="page-subtitle">Important boundaries for evaluating this software.</p></div></div>
+          <article class="panel legal-panel"><h2>Evaluation use only</h2><p>This repository is a demonstration of a campus incident workflow. It is not a production campus-management service, emergency-response channel or source of authoritative operational records.</p><h2>No emergency guarantee</h2><p>Do not rely on this prototype to report an emergency, dispatch responders, guarantee a repair or confirm that a hazard has been resolved. Follow your institution's official emergency and facilities procedures.</p><h2>AI output is advisory</h2><p>AI and rules-based triage results can be incomplete or wrong. Review the underlying report and evidence. Human operators remain responsible for decisions and verification.</p><h2>Data restrictions</h2><p>Use synthetic information only. Do not upload or enter personal, confidential, regulated or security-sensitive information.</p><h2>Production readiness</h2><p>Before real operational use, the system needs an approved privacy and threat model, authentication, server-side authorization, persistent storage controls, audit integrity, monitoring, backups and operational testing.</p><button class="text-link" data-go="privacy">Read privacy notes →</button></article>
+          <footer class="resource-legal-links"><button data-go="privacy">Privacy</button><button data-go="faq">FAQ</button><button data-go="contact">Contact</button></footer>
         </section>
       </div>
     </main>
