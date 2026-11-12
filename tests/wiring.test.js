@@ -68,3 +68,12 @@ test('incident table rows expose semantic labels for the mobile card layout', ()
   assert.match(css, /\\.incident-table td\\[data-label\\]::before/);
   assert.match(css, /@media\\s*\\(max-width:\\s*600px\\)[\\s\\S]*?\\.incident-table\\s*\\{/);
 });
+
+test('app shell provides keyboard skip navigation and accessible controls', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.match(html, /class="skip-link" href="#main-content"/);
+  assert.match(html, /<main class="main-area" id="main-content">/);
+  assert.match(html, /id="mobile-menu" class="mobile-menu"[^>]*aria-expanded="false"/);
+  assert.match(html, /<button type="button" class="small-select"[^>]*aria-label="Change activity timeframe"/);
+  assert.match(html, /id="triage-result" class="triage-result hidden" aria-live="polite"/);
+});
