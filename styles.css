@@ -311,3 +311,34 @@ select:focus-visible, textarea:focus-visible {
   .filter-select, .filter-select select { min-height: 42px; }
   .search-box input { min-height: 42px; }
 }
+
+/* Keyboard-first navigation and native control affordances. */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  transform: translateY(calc(-100% - 18px));
+  padding: 10px 14px;
+  border: 1px solid #d7e8c0;
+  border-radius: 10px;
+  background: #f5ffe9;
+  color: #19301f;
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(16, 37, 28, .16);
+  transition: transform .18s var(--ease-out);
+}
+.skip-link:focus { transform: translateY(0); }
+.small-select {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 7px 10px;
+  background: #f8faf7;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.small-select:hover { border-color: var(--line-dark); background: #fff; }
+.small-select:focus-visible { outline: 3px solid #8bbd48; outline-offset: 3px; }
