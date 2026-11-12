@@ -78,3 +78,27 @@ test('app shell provides keyboard skip navigation and accessible controls', () =
   assert.match(html, /<button type="button" class="small-select"[^>]*aria-label="Change activity timeframe"/);
   assert.match(html, /id="triage-result" class="triage-result hidden" aria-live="polite"/);
 });
+
+test('resource navigation has matching About, FAQ, Help, Contact, Privacy and Terms views', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  for (const page of ['about', 'faq', 'help', 'contact', 'privacy', 'terms']) {
+    assert.match(html, new RegExp('data-page="' + page + '"'));
+    assert.match(html, new RegExp('id="page-' + page + '"'));
+    assert.ok(appJs.includes("'" + page + "'"), 'setPage must allow ' + page);
+  }
+  assert.match(html, /<details class="panel faq-item">/);
+  assert.match(html, /does not have a connected support inbox or message-submission backend/);
+  assert.match(html, /do not enter real student records/);
+});
+
+test('appearance control supports system, light and dark preferences with persistent theme state', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  const css = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  assert.match(html, /id="theme-select" aria-label="Choose appearance"/);
+  for (const value of ['system', 'light', 'dark']) assert.match(html, new RegExp('<option value="' + value + '">'));
+  assert.match(appJs, /campusresolve-theme-v1/);
+  assert.match(appJs, /prefers-color-scheme: dark/);
+  assert.match(css, /:root\[data-theme="dark"\]/);
+});
