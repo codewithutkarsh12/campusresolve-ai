@@ -58,3 +58,12 @@ A calm, trustworthy campus-operations workspace. The interface should communicat
 
 - This refresh adds no third-party fonts, icon packages, animation packages or externally hosted assets.
 - Existing application architecture and API contracts remain unchanged.
+
+
+## Enterprise experience extension
+- Resource navigation includes About, FAQ, Help Center and Contact; trust navigation includes Privacy and Terms notes.
+- Appearance preference supports Light, Dark and System modes and is stored separately from demo incident data.
+- System mode follows the operating-system color preference.
+- Contact links to the repository issue tracker because no support inbox or message-submission backend exists.
+- Privacy and Terms views describe current prototype behavior only; they are not a legal certification or production privacy policy.
+- Keep the original forest-green identity and neutral operational surfaces. Avoid adding gradients, third-party fonts or decorative animation solely for novelty.
