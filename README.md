@@ -13,7 +13,7 @@ CampusResolve demonstrates a campus-incident workflow: report an issue, receive 
 - Optional server-side Gemini API endpoint at `POST /api/triage`.
 - Strict request bounds and output schema checks, safety-priority override, request timeout, safe error responses, and best-effort in-memory rate limiting.
 - Safe CSV escaping, escaped user-generated text, hardened HTTP headers, and a restrictive Content Security Policy for the deployment.
-- Automated unit, API, server, static wiring and security regression tests; a Chromium browser smoke suite is available separately.
+- Automated unit, API, server, static wiring and security regression tests; a lightweight DOM/server smoke suite is also available.
 
 ## Architecture
 
@@ -47,7 +47,7 @@ Optional browser test:
 npm run test:browser
 ```
 
-The browser smoke test verifies initial rendering, mobile navigation, triage fallback, XSS-safe display, preventing repeated use of a triage result, filtering, and the reopen-reason workflow. It does not replace a full device/browser matrix or manual screen-reader testing.
+The smoke test uses a small DOM compatibility harness plus the local HTTP server; it verifies initial rendering, mobile navigation, triage fallback, XSS-safe display, preventing repeated use of a triage result, filtering, and the reopen-reason workflow. It does not launch Chromium and does not replace a full device/browser matrix or manual screen-reader testing. CI runs this suite on pull requests.
 
 ## Gemini configuration
 
@@ -76,6 +76,10 @@ Use synthetic records only. Do not submit private student data, confidential inc
 The Vercel configuration serves the static frontend and defines `api/triage.js` as the server-side endpoint. Import this repository into the existing Vercel project, select the repository root, configure `GEMINI_API_KEY` privately if live AI is needed, deploy, and verify the exact production URL from a fresh browser session. A static GitHub Pages deploy provides the demo UI only; its `/api/triage` path cannot execute the Gemini server function.
 
 Do not claim that deployment, live AI, authentication, persistent storage, or a security review is complete without direct verification.
+
+## Data source register
+
+See [DATA_SOURCES.md](./DATA_SOURCES.md) for open-data candidates, license checks and the rule that synthetic incident records must never be presented as real campus reports.
 
 ## Project files
 
