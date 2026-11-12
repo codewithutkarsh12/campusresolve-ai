@@ -55,3 +55,14 @@ test('client-side files contain no hardcoded API keys or secret tokens and clien
   assert.equal(clientBundle, appJs, 'lib/client-bundle.js must match app.js byte-for-byte');
 });
 
+test('incident table rows expose semantic labels for the mobile card layout', () => {
+  const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  const css = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  const rowMatch = appJs.match(/function ticketRow\\(t\\) \\{([\\s\\S]*?)\\n  \\}/);
+  assert.ok(rowMatch, 'ticketRow renderer must exist');
+  for (const label of ['Incident', 'Category', 'Location', 'Priority', 'Status', 'Updated', 'Actions']) {
+    assert.ok(rowMatch[1].includes(`data-label="${label}"`), `Missing mobile data label: ${label}`);
+  }
+  assert.match(css, /\\.incident-table td\\[data-label\\]::before/);
+  assert.match(css, /@media\\s*\\(max-width:\\s*600px\\)[\\s\\S]*?\\.incident-table\\s*\\{/);
+});
