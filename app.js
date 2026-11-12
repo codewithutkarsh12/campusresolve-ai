@@ -123,7 +123,7 @@
   let lastFocusedElement = null;
 
   const $ = (id) => document.getElementById(id);
-  const $ = (selector) => [...document.querySelectorAll(selector)];
+  const $$ = (selector) => [...document.querySelectorAll(selector)];
   const THEME_KEY = 'campusresolve-theme-v1';
   function readThemePreference() {
     try {
