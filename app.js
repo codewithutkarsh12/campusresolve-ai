@@ -697,7 +697,7 @@
   });
   $('new-report-top').addEventListener('click', openReportModal);
   $('new-report-incident').addEventListener('click', openReportModal);
-  $('help-top').addEventListener('click', () => setPage('how'));
+  $('help-top').addEventListener('click', () => setPage('help'));
   $('banner-dismiss').addEventListener('click', () => document.querySelector('.demo-banner').classList.add('hidden'));
   $('reset-button').addEventListener('click', resetDemo);
   $('reset-button').title = 'Reset synthetic demo data';
