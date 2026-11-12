@@ -58,10 +58,12 @@ test('client-side files contain no hardcoded API keys or secret tokens and clien
 test('incident table rows expose semantic labels for the mobile card layout', () => {
   const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
   const css = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
-  const rowMatch = appJs.match(/function ticketRow\\(t\\) \\{([\\s\\S]*?)\\n  \\}/);
-  assert.ok(rowMatch, 'ticketRow renderer must exist');
+  const rowStart = appJs.indexOf('function ticketRow(t) {');
+  const rowEnd = appJs.indexOf('function renderRecentTable()', rowStart);
+  assert.ok(rowStart >= 0 && rowEnd > rowStart, 'ticketRow renderer must exist');
+  const rowRenderer = appJs.slice(rowStart, rowEnd);
   for (const label of ['Incident', 'Category', 'Location', 'Priority', 'Status', 'Updated', 'Actions']) {
-    assert.ok(rowMatch[1].includes(`data-label="${label}"`), `Missing mobile data label: ${label}`);
+    assert.ok(rowRenderer.includes(`data-label="${label}"`), `Missing mobile data label: ${label}`);
   }
   assert.match(css, /\\.incident-table td\\[data-label\\]::before/);
   assert.match(css, /@media\\s*\\(max-width:\\s*600px\\)[\\s\\S]*?\\.incident-table\\s*\\{/);
