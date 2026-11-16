@@ -84,3 +84,14 @@ Apply the palette consistently to the sidebar, sticky top bar, metric panels, in
 ## Workspace FAQ content contract
 
 The FAQ must explain the documented product purpose (report → advisory triage → repeat-pattern review → workflow follow-through → local event timeline), every Workspace area, the NMIET demo label, synthetic/localStorage data, optional server-side Gemini processing, human review, emergency limitations and missing production controls. Never imply live campus integration, real incident statistics, an immutable audit log or production readiness.
+
+
+## Unslop refresh extension — 2026-11-16
+
+- Preserve the product's operational clarity while strengthening hierarchy and visual rhythm.
+- Pair a system sans-serif body face with a platform-native editorial serif for large page titles and insight headlines; no remote font service or new runtime dependency.
+- Use a warmer neutral light canvas and a neutral near-black dark canvas with restrained lime, teal and semantic status colors.
+- Give metrics, panels, navigation and resource cards consistent spacing, radii and hover feedback.
+- Motion is short and functional: page entrance, chart-bar rise, subtle live-status breathing and small hover/press feedback. No scroll hijacking or motion-gated content.
+- Respect reduced-motion settings globally.
+- Keep existing DOM hooks, app workflows, CSP, semantic controls and responsive mobile incident-card layout intact.
