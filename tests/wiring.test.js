@@ -129,3 +129,14 @@ test('dark theme uses a neutral near-black palette across primary interface surf
     assert.ok(css.includes(selector), 'Expected dark-theme coverage for ' + selector);
   }
 });
+
+test('unslop refresh stylesheet is loaded and includes typography, interaction motion and reduced-motion support', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const css = fs.readFileSync(path.join(ROOT, 'ui-refresh.css'), 'utf8');
+  assert.match(html, /href="\.\/ui-refresh\.css"/);
+  assert.match(css, /--font-display/);
+  assert.match(css, /@keyframes page-arrive/);
+  assert.match(css, /@keyframes live-breathe/);
+  assert.match(css, /prefers-reduced-motion: reduce/);
+  assert.match(css, /:root\[data-theme="dark"\]/);
+});
